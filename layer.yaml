@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  This CFN Template allows you to install the AWS CFN Macro as a Lambda Function to execute ECS Compose-X directly
+  from within your AWS CloudFormation templates.
+
+Transform:
+  - AWS::Serverless-2016-10-31
+
+Metadata:
+  Maintainer: john@compose-x.io
+  Version: 2021-04-14
+Resources:
+  LambdaLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.7
+        - python3.8
+      ContentUri: layer.zip
+      Description: Confluent Kafka Python
+      LayerName: confluent_kafka_python
+      LicenseInfo: Apache2.0
+
+  LayerPermissions:
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Type: AWS::Lambda::LayerVersionPermission
+    Properties:
+      Action: lambda:GetLayerVersion
+      LayerVersionArn: !Ref LambdaLayer
+      OrganizationId: !Ref AWS::NoValue
+      Principal: "*"
